@@ -29,11 +29,11 @@ router.post("/", async (req, res) => {
     if (!user.verified) {
       const token = await new Token({
         userId: user._id,
-        token: crypto.randomBytes(32).toString("hex"),
+        token: crypto.randomInt(100000, 999999).toString(),
       }).save();
-      const link = `${process.env.BASE_URL}users/${user._id}/verify/${token.token}`;
+      // const link = `${process.env.BASE_URL}users/${user._id}/verify/${token.token}`;
       const subject = "Verify your email address";
-      const message = `Hello ${user.name},\n\nPlease verify your account by clicking the link: ${link}`;
+      const message = `Hello ${user.name},\n\nPlease verify your account with this OTP code \n\n${token.token}`;
       await sendEmail(user.email, subject, message);
       return res
         .status(401)
