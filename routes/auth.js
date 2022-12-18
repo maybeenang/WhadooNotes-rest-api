@@ -3,6 +3,9 @@ const { User } = require("../models/user");
 const Joi = require("joi");
 const passwordComplexity = require("joi-password-complexity");
 const bcrypt = require("bcrypt");
+const Token = require("../models/token");
+const sendEmail = require("../utils/sendEmail");
+const crypto = require("crypto");
 
 router.post("/", async (req, res) => {
   try {
@@ -22,6 +25,20 @@ router.post("/", async (req, res) => {
     );
     if (!validPassword)
       return res.status(401).send({ message: "Invalid email or password." });
+
+    if (!user.verified) {
+      const token = await new Token({
+        userId: user._id,
+        token: crypto.randomBytes(32).toString("hex"),
+      }).save();
+      const link = `${process.env.BASE_URL}users/${user._id}/verify/${token.token}`;
+      const subject = "Verify your email address";
+      const message = `Hello ${user.name},\n\nPlease verify your account by clicking the link: ${link}`;
+      await sendEmail(user.email, subject, message);
+      return res
+        .status(401)
+        .send({ message: "Please verify your email address." });
+    }
 
     const token = user.generateAuthToken();
     res

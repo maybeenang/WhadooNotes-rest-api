@@ -23,6 +23,7 @@ const userSchema = new moongose.Schema({
     minlength: 5,
     maxlength: 1024,
   },
+  verified: { type: Boolean, default: false },
 });
 
 userSchema.methods.generateAuthToken = () => {
