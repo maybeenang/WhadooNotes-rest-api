@@ -2,6 +2,8 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const { User, validateUser } = require("../models/user");
 const Token = require("../models/token");
+const Todos = require("../models/todo");
+const Notes = require("../models/note");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
@@ -69,6 +71,15 @@ router.get("/:id/verify/:token", async (req, res) => {
     });
 
     await token.remove();
+    const notes = new Notes({
+      userId: user._id,
+      notes: [],
+    }).save();
+
+    const todos = new Todos({
+      userId: user._id,
+      notes: [],
+    }).save();
 
     res.status(200).send({ message: "Email verified successfully" });
   } catch (error) {

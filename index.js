@@ -7,6 +7,8 @@ const app = express();
 // import routes
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
+const noteRoutes = require("./routes/notes");
+const todoRoutes = require("./routes/todos");
 
 // import database connection
 const db = require("./db");
@@ -21,6 +23,8 @@ app.use(cors());
 // routes
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/notes", noteRoutes);
+app.use("/api/todos", todoRoutes);
 
 // setting up port
 const PORT = process.env.PORT || 3000;
