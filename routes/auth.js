@@ -37,7 +37,10 @@ router.post("/", async (req, res) => {
       await sendEmail(user.email, subject, message);
       return res
         .status(401)
-        .send({ message: "Please verify your email address." });
+        .send({
+          message: "Please verify your email address.",
+          userId: user._id,
+        });
     }
 
     const token = user.generateAuthToken();
