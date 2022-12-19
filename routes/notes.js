@@ -2,23 +2,21 @@ const router = require("express").Router();
 const Notes = require("../models/note");
 const { User } = require("../models/user");
 
-router.get("/", async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
-    console.log(req.body);
     let user = await User.findOne({
-      _id: req.body.userId,
+      _id: req.params.userId,
     });
 
     if (!user) return res.status(400).send({ message: "User Invalid" });
 
-    const notes = await Notes.find({
+    const notes = await Notes.findOne({
       userId: user._id,
     });
 
     res.status(200).send(notes);
   } catch (error) {
     res.status(500).send({ message: error.message });
-    console.log(error.message);
   }
 });
 

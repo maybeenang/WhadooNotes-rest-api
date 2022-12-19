@@ -35,18 +35,26 @@ router.post("/", async (req, res) => {
       const subject = "Verify your email address";
       const message = `Hello ${user.name},\n\nPlease verify your account with this OTP code \n\n${token.token}`;
       await sendEmail(user.email, subject, message);
-      return res
-        .status(401)
-        .send({
-          message: "Please verify your email address.",
-          userId: user._id,
-        });
+      return res.status(402).send({
+        message: "Please verify your email address.",
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        userId: user._id,
+      });
     }
 
     const token = user.generateAuthToken();
     res
       .status(200)
-      .send({ data: token, message: "User logged in successfully." });
+      .send({
+        data: token,
+        message: "User logged in successfully.",
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        userId: user._id,
+      });
   } catch (error) {
     res.status(500).send({ message: error.message });
     console.log(error.message);
@@ -55,7 +63,6 @@ router.post("/", async (req, res) => {
 
 const validateUser = (user) => {
   const schema = Joi.object({
-    name: Joi.string().min(3).max(50).required().label("Name"),
     email: Joi.string().min(5).max(255).required().email().label("Email"),
     password: passwordComplexity().required().label("Password"),
   });

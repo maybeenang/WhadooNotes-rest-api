@@ -42,12 +42,13 @@ router.post("/", async (req, res) => {
     const message = `Hello ${user.name},\n\nPlease verify your account with this OTP code \n\n${token.token}`;
     await sendEmail(user.email, subject, message);
 
-    res
-      .status(201)
-      .send({
-        message: "An Email sent to your account please verify",
-        userId: user._id,
-      });
+    res.status(201).send({
+      message: "An Email sent to your account please verify",
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      userId: user._id,
+    });
   } catch (error) {
     res.status(500).send({ message: error.message });
     console.log(error.message);
@@ -68,10 +69,16 @@ router.get("/:id/verify/:token", async (req, res) => {
 
     if (!token) return res.status(400).send({ message: "Invalid Link" });
 
-    await User.updateOne({
-      _id: user._id,
-      verified: true,
-    });
+    await User.updateOne(
+      {
+        _id: user._id,
+      },
+      {
+        $set: {
+          verified: true,
+        },
+      }
+    );
 
     await token.remove();
     const notes = new Notes({
