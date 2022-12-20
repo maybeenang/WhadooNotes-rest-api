@@ -40,8 +40,11 @@ router.post("/", async (req, res) => {
         },
       }
     );
+    const todo = await Todos.findOne({
+      userId: user._id,
+    });
 
-    res.status(201).send({ message: "Todo Created Successfully" });
+    res.status(200).send(todo);
   } catch (error) {
     res.status(500).send({ message: error.message });
     console.log(error.message);
@@ -57,7 +60,7 @@ router.put("/", async (req, res) => {
     if (!user) return res.status(400).send({ message: "User Invalid" });
 
     await Todos.updateOne(
-      { userId: user._id, "todo.id": req.body.id },
+      { userId: user._id, "todo._id": req.body.id },
       {
         $set: {
           "todo.$.label": req.body.label,
@@ -67,8 +70,11 @@ router.put("/", async (req, res) => {
         },
       }
     );
+    const todo = await Todos.findOne({
+      userId: user._id,
+    });
 
-    res.status(201).send({ message: "Todo Updated" });
+    res.status(200).send(todo);
   } catch (error) {
     res.status(500).send({ message: error.message });
     console.log(error.message);

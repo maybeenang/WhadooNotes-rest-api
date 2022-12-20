@@ -41,8 +41,11 @@ router.post("/", async (req, res) => {
         },
       }
     );
+    const notes = await Notes.findOne({
+      userId: user._id,
+    });
 
-    res.status(201).send({ message: "Note Created Successfully" });
+    res.status(200).send(notes);
   } catch (error) {
     res.status(500).send({ message: error.message });
     console.log(error.message);
@@ -72,7 +75,11 @@ router.put("/", async (req, res) => {
       }
     );
 
-    res.status(201).send({ message: "Note Updated Successfully" });
+    const notes = await Notes.findOne({
+      userId: user._id,
+    });
+
+    res.status(200).send(notes);
   } catch (error) {
     res.status(500).send({ message: error.message });
     console.log(error.message);
