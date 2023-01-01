@@ -60,14 +60,14 @@ router.get("/:id/verify/:token", async (req, res) => {
     const user = await User.findOne({
       _id: req.params.id,
     });
-    if (!user) return res.status(400).send({ message: "Invalid Link" });
+    if (!user) return res.status(400).send({ message: "Invalid Link atas" });
 
     const token = await Token.findOne({
       userId: user._id,
       token: req.params.token,
     });
 
-    if (!token) return res.status(400).send({ message: "Invalid Link" });
+    if (!token) return res.status(400).send({ message: "Invalid Link bawah" });
 
     await User.updateOne(
       {
